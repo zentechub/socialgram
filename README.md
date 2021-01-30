@@ -31,17 +31,17 @@ unfollow(followerId, followeeId): Follower unfollows a followee.
 
 Technologies used :
 ------------------------------
-Java
-Spring Boot
-Embedded MongoDB
-Maven
-Swagger 2
-Junit & Mockito
+- Java
+- Spring Boot
+- Embedded MongoDB
+- Maven
+- Swagger 2
+- Junit & Mockito
 
 Build Requirements :
 ------------------------------
-Java 1.8
-mvn test
+- Java 1.8
+- mvn test
 
 
 How to test manually?
@@ -112,10 +112,12 @@ http://localhost:8080/v2/api-docs - JSON format of rest documentation http://loc
 Achieves :
 -----------------
 1) Solution was created;
-2) Unit tests and Integration tests were created with 55.5% of code coverage.
+2) Unit tests and Integration tests were created for code coverage.
 
 Suggestions for improvement :
 -------------------------------------------
 1) Dockerizing would be nice, it allows us to test our application across to multiple instances.
 2) Distributed Cache(Redis) would need if we run application across to multiple instances.
 3) Authentication will restrict unauthorizes access to this API.
+4) Sonarlint connection with Sonar Dashboard
+5) Setting up this project in github actions for CI/CD.
