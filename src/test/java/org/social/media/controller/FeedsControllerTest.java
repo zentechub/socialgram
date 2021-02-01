@@ -55,9 +55,9 @@ public class FeedsControllerTest {
 	}
 
 	@Test
-	public void getNewsFeeds_ok() throws Exception{
+	public void getNewsFeeds_for_400status() throws Exception{
 		mvc.perform(MockMvcRequestBuilders.post("/post/1"))
-				.andExpect(status().isOk())
+				.andExpect(status().is4xxClientError())
 				.andReturn();
 	}
 	

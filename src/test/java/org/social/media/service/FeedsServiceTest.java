@@ -3,8 +3,10 @@ package org.social.media.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.social.media.config.LoadUsers;
 import org.social.media.dto.NewsFeed;
 import org.social.media.dto.User;
 import org.social.media.exception.EmptyPostException;
@@ -30,7 +31,6 @@ import org.social.media.exception.FollowerNotFoundException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.FeedsRepository;
 import org.social.media.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.TestExecutionListeners;
@@ -49,10 +49,10 @@ public class FeedsServiceTest {
 
 	@Mock
 	public UserRepository userRepository;
-	
+
 	@Mock
 	public User user;
-	
+
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
 
@@ -73,7 +73,7 @@ public class FeedsServiceTest {
 			.hasMessage("Empty value is passed.");
 		}
 	}
-	
+
 	@Test
 	public void getNewsFeed_for_userId_withValidInput() throws Exception {
 		User user=new User();
@@ -92,11 +92,11 @@ public class FeedsServiceTest {
 		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
 		feedsService.createPost("1", "1", "");
 	}
-	
+
 	@Test(expected = UserNotFoundException.class)
 	public void createPost_withInvalidUser() throws Exception {
-		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
-		feedsService.createPost("11", "11", "This is Sixth post from Sixth user");
+		when(userRepository.findById(eq("11"))).thenReturn(Optional.empty());
+		feedsService.createPost("11", "11", "This is eleventh post from eleventh user");
 	}
 
 	@Test
@@ -106,12 +106,12 @@ public class FeedsServiceTest {
 		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
 		feedsService.createPost("1", "4", "");
 	}
-	
+
 	@Test
 	public void getNewsFeed_for_userId_notPresentInDb() throws Exception {
 		exception.expect(UserNotFoundException.class);
 		exception.expectMessage("User id with 1 not found.");
-		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
+		when(userRepository.findById(any())).thenReturn(Optional.empty());
 		feedsService.getNewsFeeds("1");
 	}
 
@@ -124,11 +124,50 @@ public class FeedsServiceTest {
 	}
 
 	@Test
+	public void getNewsFeed_for_userId_with20Feeds() throws Exception {
+		List<NewsFeed> expectedList = buildNewsFeeds(20);
+		when(userRepository.findById(any())).thenReturn(Optional.of(buildUserWithFolloweeIds()));
+		when(feedsRepository.getNewsFeeds(any())).thenReturn(expectedList);
+
+		List<NewsFeed> actualList = feedsService.getNewsFeeds("1");
+		assertEquals(20, actualList.size());
+		assertEquals(expectedList, actualList);
+	}
+
+	@Test
+	public void getNewsFeed_for_userId_withMoreThan20Feeds() throws Exception {
+		List<NewsFeed> expectedList = buildNewsFeeds(30);
+		when(userRepository.findById(any())).thenReturn(Optional.of(buildUserWithFolloweeIds()));
+		when(feedsRepository.getNewsFeeds(any())).thenReturn(expectedList);
+
+		List<NewsFeed> actualList = feedsService.getNewsFeeds("1");
+		assertEquals(20, actualList.size());
+	}
+
+	@Test
 	public void createPost_withUser() throws Exception {
 		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
 		when(feedsRepository.createPost(any())).thenReturn("2");
 		String pstId = feedsService.createPost("2", "2", "This is Sixth post from Sixth user");
 		assertEquals(2, Integer.parseInt(pstId));
+	}
+
+	private List<NewsFeed> buildNewsFeeds(int size) {
+		List<NewsFeed> list = new ArrayList<>();
+
+		for(int i=0; i<size; i++) {
+			NewsFeed news = new NewsFeed();
+			news.setPostDateTime(LocalDateTime.now());
+			list.add(news);
+		};
+		return list;
+	}
+	private User buildUserWithFolloweeIds() {
+		User user=new User();
+		Set<String> data=new HashSet<>();
+		data.add("1");
+		user.setFolloweeIds(data);
+		return user;
 	}
 
 }

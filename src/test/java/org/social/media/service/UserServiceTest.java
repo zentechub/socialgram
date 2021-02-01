@@ -2,11 +2,10 @@ package org.social.media.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.social.media.dto.NewsFeed;
 import org.social.media.dto.User;
 import org.social.media.exception.FollowerNotFoundException;
 import org.social.media.exception.UserNotFoundException;
@@ -59,9 +57,9 @@ public class UserServiceTest {
 	@Test
 	public void follow_for_userId_withZeroFolloweeIds() throws Exception {
 		exception.expect(FollowerNotFoundException.class);
-		exception.expectMessage("Follower id with 11 not found.");
-		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
-		when(userRepository.findById("11")).thenReturn(Optional.of(new User()));
+		exception.expectMessage("User id with 3 not found.");
+		when(userRepository.findById(eq("2"))).thenReturn(Optional.of(new User()));
+		when(userRepository.findById(eq("3"))).thenReturn(Optional.empty());
 		userService.follow("2", "3");
 	}
 	
@@ -69,16 +67,16 @@ public class UserServiceTest {
 	public void unfollow_for_userId_notPresentInDb() throws Exception {
 		exception.expect(UserNotFoundException.class);
 		exception.expectMessage("User id with 1 not found.");
-		User user=new User();
-		when(userRepository.findById(any())).thenReturn(Optional.of(user));
+		when(userRepository.findById(any())).thenReturn(Optional.empty());
 		userService.unfollow("1", "2");
 	}
 	
 	@Test
-	public void unfollow_for_userId_withZeroFolloweeIds() throws Exception {
+	public void unfollow_for_userId_whenFollowerIds_doesnot_exist() throws Exception {
 		exception.expect(FollowerNotFoundException.class);
-		exception.expectMessage("Follower id with 1 not found.");
-		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
+		exception.expectMessage("Follower id with 3 not found.");
+		when(userRepository.findById(eq("2"))).thenReturn(Optional.of(new User()));
+		when(userRepository.findById(eq("3"))).thenReturn(Optional.empty());
 		userService.unfollow("2", "3");
 	}
 	

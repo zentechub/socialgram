@@ -1,7 +1,9 @@
 package org.social.media.service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.social.media.dto.NewsFeed;
@@ -41,7 +43,14 @@ public class FeedsService {
 		}
 		Set<String> followIds= user.getFolloweeIds();
 		followIds.add(userId);
-		return feedsRepository.getNewsFeeds(followIds);
+		List<NewsFeed> list = feedsRepository.getNewsFeeds(followIds);
+		if(list.size()>20) {
+			List<NewsFeed> sortedList = list.stream()
+					.sorted(Comparator.comparing(NewsFeed :: getPostDateTime).reversed())
+					.collect(Collectors.toList());
+			list = sortedList.stream().limit(20).collect(Collectors.toList());
+		}
+		return list;
 	}
 
 }

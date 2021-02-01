@@ -7,17 +7,26 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "NewsFeed")
-public class NewsFeed implements Serializable {
+public class NewsFeed implements Serializable  {
 	
 	private static final long serialVersionUID = 1L;
 	String userId; 
 	@Id
 	String postId;
 	String content;
-	LocalDateTime postDateTime=LocalDateTime.now();
-	
+	LocalDateTime postDateTime;
+		
 	public NewsFeed() {
 		super();
+		postDateTime=LocalDateTime.now();
+	}
+	
+	public LocalDateTime getPostDateTime() {
+		return postDateTime;
+	}
+
+	public void setPostDateTime(LocalDateTime postDateTime) {
+		this.postDateTime = postDateTime;
 	}
 	
 	public NewsFeed(String userId, String postId, String content) {
@@ -83,5 +92,5 @@ public class NewsFeed implements Serializable {
 			return false;
 		return true;
 	}
-
+	
 }
