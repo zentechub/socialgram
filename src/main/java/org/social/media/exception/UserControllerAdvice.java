@@ -45,4 +45,9 @@ public class UserControllerAdvice extends ResponseEntityExceptionHandler {
 	public ErrorDetails handleExceptionHandler(EmptyPostException e) {
 		return new ErrorDetails(new Date(), "Post content is empty", e.getMessage());
 	}
+	@ExceptionHandler(value = SelfFollowException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ErrorDetails handleExceptionHandler(SelfFollowException e) {
+		return new ErrorDetails(new Date(), "Self follow not possible", e.getMessage());
+	}
 }

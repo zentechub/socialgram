@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.social.media.dto.User;
 import org.social.media.exception.FollowerNotFoundException;
+import org.social.media.exception.SelfFollowException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.FeedsRepository;
 import org.social.media.repository.UserRepository;
@@ -52,6 +53,14 @@ public class UserServiceTest {
 		exception.expectMessage("User id with 1 not found.");
 		when(userRepository.findById(any())).thenReturn(Optional.empty());
 		userService.follow("1", "2");
+	}
+	
+	@Test
+	public void follow_for_selfId_exceptionthrow() throws Exception {
+		exception.expect(SelfFollowException.class);
+		exception.expectMessage("User can not follow to him/her self.");
+		when(userRepository.findById("1")).thenReturn(Optional.of(new User()));
+		userService.follow("1", "1");
 	}
 	
 	@Test

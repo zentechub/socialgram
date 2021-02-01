@@ -2,6 +2,7 @@ package org.social.media.service;
 
 import org.social.media.dto.User;
 import org.social.media.exception.FollowerNotFoundException;
+import org.social.media.exception.SelfFollowException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,9 @@ public class UserService {
 				orElseThrow(() -> new UserNotFoundException("User id with "+followerId+" not found."));
 		userRepository.findById(followeeId).
 				orElseThrow(() -> new FollowerNotFoundException("User id with "+followeeId+" not found."));
-
+		if(followerId.equals(followeeId)) {
+			throw new SelfFollowException("User can not follow to him/her self.");
+		}
 		user.setUserId(followerId);
 		user.getFolloweeIds().add(followeeId);
 		return userRepository.save(user);

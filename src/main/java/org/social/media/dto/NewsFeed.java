@@ -33,6 +33,7 @@ public class NewsFeed implements Serializable  {
 		this.userId = userId;
 		this.postId = postId;
 		this.content = content;
+		this.postDateTime = LocalDateTime.now();
 	}
 	
 	public String getUserId() {

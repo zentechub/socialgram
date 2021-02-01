@@ -116,14 +116,6 @@ public class FeedsServiceTest {
 	}
 
 	@Test
-	public void getNewsFeed_for_userId_withZeroFolloweeIds() throws Exception {
-		exception.expect(FollowerNotFoundException.class);
-		exception.expectMessage("User 1 has no followers.");
-		when(userRepository.findById(any())).thenReturn(Optional.of(new User()));
-		feedsService.getNewsFeeds("1");
-	}
-
-	@Test
 	public void getNewsFeed_for_userId_with20Feeds() throws Exception {
 		List<NewsFeed> expectedList = buildNewsFeeds(20);
 		when(userRepository.findById(any())).thenReturn(Optional.of(buildUserWithFolloweeIds()));
