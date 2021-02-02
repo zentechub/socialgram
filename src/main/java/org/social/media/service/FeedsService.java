@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.social.media.dto.NewsFeed;
 import org.social.media.dto.User;
 import org.social.media.exception.EmptyPostException;
+import org.social.media.exception.PostIdAlreadyExistException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.FeedsRepository;
 import org.social.media.repository.UserRepository;
@@ -27,6 +28,7 @@ public class FeedsService {
 	public String createPost(String userId, String postId, String content) throws Exception {
 		userRepository.findById(userId).
 		orElseThrow(() -> new UserNotFoundException("User id with "+userId+" not found."));
+		feedsRepository.findByPostId(postId).ifPresent(s -> { throw new PostIdAlreadyExistException("Post Id "+postId+" already exist in db.");});
 		if(StringUtils.isEmpty(content) ||  content==null) {
 			throw new EmptyPostException("Empty value is passed.");
 		} 

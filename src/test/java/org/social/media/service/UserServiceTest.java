@@ -19,6 +19,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.social.media.dto.User;
 import org.social.media.exception.FollowerNotFoundException;
 import org.social.media.exception.SelfFollowException;
+import org.social.media.exception.SelfUnFollowException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.FeedsRepository;
 import org.social.media.repository.UserRepository;
@@ -61,6 +62,14 @@ public class UserServiceTest {
 		exception.expectMessage("User can not follow to him/her self.");
 		when(userRepository.findById("1")).thenReturn(Optional.of(new User()));
 		userService.follow("1", "1");
+	}
+	
+	@Test
+	public void unfollow_for_selfId_exceptionthrow() throws Exception {
+		exception.expect(SelfUnFollowException.class);
+		exception.expectMessage("User can not unfollow to him/her self.");
+		when(userRepository.findById("1")).thenReturn(Optional.of(new User()));
+		userService.unfollow("1", "1");
 	}
 	
 	@Test

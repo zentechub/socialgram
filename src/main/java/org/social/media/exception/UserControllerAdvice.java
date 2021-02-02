@@ -50,4 +50,14 @@ public class UserControllerAdvice extends ResponseEntityExceptionHandler {
 	public ErrorDetails handleExceptionHandler(SelfFollowException e) {
 		return new ErrorDetails(new Date(), "Self follow not possible", e.getMessage());
 	}
+	@ExceptionHandler(value = SelfUnFollowException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ErrorDetails handleExceptionHandler(SelfUnFollowException e) {
+		return new ErrorDetails(new Date(), "Self unfollow not possible", e.getMessage());
+	}
+	@ExceptionHandler(value = PostIdAlreadyExistException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ErrorDetails handleExceptionHandler(PostIdAlreadyExistException e) {
+		return new ErrorDetails(new Date(), "Post Id already exist in db", e.getMessage());
+	}
 }

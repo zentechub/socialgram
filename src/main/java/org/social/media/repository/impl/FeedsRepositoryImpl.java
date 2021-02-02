@@ -1,6 +1,7 @@
 package org.social.media.repository.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -30,5 +31,12 @@ public class FeedsRepositoryImpl implements FeedsRepository{
 		query.addCriteria(Criteria.where("userId").in(followerIds)).with(Sort.by(Direction.DESC, "postDateTime")).limit(20);
 		return mongoTemplate.find(query, NewsFeed.class);		
 	}	
+	
+	@Override
+	public Optional<NewsFeed> findByPostId(String postId) {
+		Query query=new Query();
+		query.addCriteria(Criteria.where("postId").is(postId));
+		return Optional.ofNullable(mongoTemplate.findOne(query, NewsFeed.class));
+	}
 	
 }

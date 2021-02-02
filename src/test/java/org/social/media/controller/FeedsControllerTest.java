@@ -45,12 +45,12 @@ public class FeedsControllerTest {
 	}
 
 	@Test
-	public void createPost() throws Exception {
+	public void createPost_with400Status() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.post("/user/1/post/1")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("This is first post of first user"))
-				.andExpect(status().isCreated())
+				.andExpect(status().is4xxClientError())
 				.andReturn();
 	}
 

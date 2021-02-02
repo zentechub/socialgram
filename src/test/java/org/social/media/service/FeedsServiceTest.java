@@ -28,6 +28,7 @@ import org.social.media.dto.NewsFeed;
 import org.social.media.dto.User;
 import org.social.media.exception.EmptyPostException;
 import org.social.media.exception.FollowerNotFoundException;
+import org.social.media.exception.PostIdAlreadyExistException;
 import org.social.media.exception.UserNotFoundException;
 import org.social.media.repository.FeedsRepository;
 import org.social.media.repository.UserRepository;
@@ -134,6 +135,15 @@ public class FeedsServiceTest {
 
 		List<NewsFeed> actualList = feedsService.getNewsFeeds("1");
 		assertEquals(20, actualList.size());
+	}
+	
+	@Test
+	public void createPost_postId_alreadyExistInDb() throws Exception {
+		exception.expect(PostIdAlreadyExistException.class);
+		exception.expectMessage("Post Id 1 already exist in db.");
+		when(userRepository.findById("1")).thenReturn(Optional.of(new User()));
+		when(feedsRepository.findByPostId("1")).thenReturn(Optional.of(new NewsFeed()));
+		feedsService.createPost("1", "1", "This is first post with user one");
 	}
 
 	@Test
